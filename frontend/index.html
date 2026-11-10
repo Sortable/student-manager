@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Quản lý kết quả học tập</title>
+
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="./a1-ledger.css?v=a2e3e12b">
+
+    <script src="./app.js?v=edit-1" defer></script>
+    <script src="./student-form.js?v=edit-1" defer></script>
+    <script src="./student-detail.js" defer></script>
+</head>
+
+<body class="so-diem">
+    <main class="khung-trang">
+        <header class="dau-trang">
+            <div>
+                <p class="nhan">QUẢN LÝ SINH VIÊN</p>
+                <h1>Kết quả học tập</h1>
+                <p>Theo dõi kết quả học tập của nhóm sinh viên.</p>
+            </div>
+
+            <button id="nut-tai-lai" type="button">
+                Tải lại dữ liệu
+            </button>
+        </header>
+
+        <section class="khu-thong-ke" aria-labelledby="tieu-de-thong-ke">
+            <h2 id="tieu-de-thong-ke">Thống kê toàn nhóm</h2>
+
+                <div class="luoi-thong-ke">
+                <div class="o-thong-ke">
+                    <p>Tổng sinh viên</p>
+                        <strong id="tong-sinh-vien">—</strong>
+                </div>
+
+                <div class="o-thong-ke">
+                    <p>GPA cao nhất</p>
+                        <strong id="gpa-cao-nhat">—</strong>
+                    <p id="sinh-vien-cao-nhat" class="chi-tiet-thong-ke"></p>
+                </div>
+
+                <div class="o-thong-ke">
+                    <p>GPA thấp nhất</p>
+                        <strong id="gpa-thap-nhat">—</strong>
+                    <p id="sinh-vien-thap-nhat" class="chi-tiet-thong-ke"></p>
+                </div>
+
+                <div class="o-thong-ke">
+                    <p>GPA trung bình</p>
+                        <strong id="gpa-trung-binh">—</strong>
+                </div>
+                </div>
+
+                    <p id="thong-bao-thong-ke" role="status"></p>
+        </section>
+
+        <details class="the-du-lieu khu-nhap">
+    <summary>Thêm sinh viên</summary>
+
+    <form id="bieu-mau-sinh-vien" aria-label="Thêm sinh viên">
+        <fieldset id="khung-nhap-sinh-vien" class="khung-nhap">
+            <div class="luoi-thong-tin">
+                <label class="truong-nhap">
+                    MSSV
+                    <input id="mssv-moi" maxlength="30" required>
+                </label>
+
+                <label class="truong-nhap">
+                    Họ tên
+                    <input id="ho-ten-moi" maxlength="100" required>
+                </label>
+            </div>
+
+            <h3>Danh sách môn học</h3>
+
+            <div id="danh-sach-mon-nhap"></div>
+
+            <div class="thao-tac-nhap">
+                <button id="nut-them-mon" type="button" class="nut-phu">
+                    Thêm môn học
+                </button>
+
+                <button type="submit">
+                    Lưu sinh viên
+                </button>
+
+                <button id="nut-huy-sua" type="button" class="nut-phu" hidden>
+                    Hủy chỉnh sửa
+                </button>
+
+            </div>
+        </fieldset>
+
+        <p id="thong-bao-luu" role="status"></p>
+    </form>
+</details>
+
+<template id="mau-mon-hoc">
+    <fieldset class="dong-mon">
+        <legend>Môn học</legend>
+
+        <div class="luoi-mon">
+            <label class="truong-nhap">
+                Tên môn
+                <input class="ten-mon" maxlength="100" required>
+            </label>
+
+            <label class="truong-nhap">
+                Điểm 40%
+                <input
+                    class="diem-40"
+                    type="number"
+                    min="0"
+                    max="10"
+                    step="any"
+                    required
+                >
+            </label>
+
+            <label class="truong-nhap">
+                Điểm 60%
+                <input
+                    class="diem-60"
+                    type="number"
+                    min="0"
+                    max="10"
+                    step="any"
+                    required
+                >
+            </label>
+
+            <button type="button" class="nut-xoa-mon nut-phu">
+                Xóa môn
+            </button>
+        </div>
+    </fieldset>
+</template>
+
+        <section class="the-du-lieu">
+            <h2>Danh sách sinh viên</h2>
+            
+
+        <p id="thong-bao" role="status">Đang tải dữ liệu...</p>
+        
+
+        <form id="bo-loc" class="bo-loc">
+            <div class="truong-loc">
+                <label for="tu-khoa">Tìm sinh viên</label>
+
+                <input
+                    id="tu-khoa"
+                    type="search"
+                    placeholder="Nhập MSSV hoặc họ tên"
+                    autocomplete="off"
+                >
+            </div>
+
+            <div class="truong-loc">
+                <label for="thu-tu">Sắp xếp GPA</label>
+
+                <select id="thu-tu">
+                    <option value="giam">Cao đến thấp</option>
+                    <option value="tang">Thấp đến cao</option>
+                </select>
+            </div>
+
+            <button id="nut-tim-kiem" type="submit">
+                Tìm kiếm
+            </button>
+        </form>
+
+            <div class="bang-cuon">
+                <table aria-label="Danh sách sinh viên và GPA">
+                    <thead>
+                        <tr>
+                            <th scope="col">MSSV</th>
+                            <th scope="col">Họ tên</th>
+                            <th scope="col">Số môn</th>
+                            <th scope="col" class="cot-diem">GPA (thang 10)</th>
+                            <th scope="col" class="cot-thao-tac">Thao tác</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="danh-sach-sinh-vien">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    
+    <dialog id="hop-thoai-chi-tiet" aria-labelledby="tieu-de-chi-tiet">
+    <div class="dau-chi-tiet">
+        <h2 id="tieu-de-chi-tiet">Chi tiết sinh viên</h2>
+
+        <form method="dialog">
+            <button class="nut-phu" autofocus>Đóng</button>
+        </form>
+    </div>
+
+    <p id="thong-tin-chi-tiet"></p>
+
+    <p>
+        GPA:
+        <strong id="gpa-chi-tiet"></strong>
+    </p>
+
+    <div class="bang-cuon">
+        <table aria-label="Điểm các môn học">
+            <thead>
+                <tr>
+                    <th scope="col">Tên môn</th>
+                    <th scope="col" class="cot-diem">Điểm 40%</th>
+                    <th scope="col" class="cot-diem">Điểm 60%</th>
+                    <th scope="col" class="cot-diem">Tổng kết</th>
+                </tr>
+            </thead>
+
+            <tbody id="mon-hoc-chi-tiet"></tbody>
+        </table>
+    </div>
+</dialog>
+</body>
+</html>
